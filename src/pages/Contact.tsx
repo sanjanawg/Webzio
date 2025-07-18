@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card, CardContent, CardDescription, CardHeader, CardTitle
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -38,31 +40,32 @@ const Contact = () => {
     }
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
-    const formData = new FormData(e.target);
-    const email = formData.get("email");
+    const formData = new FormData(e.currentTarget);
+    const response = await fetch("https://formspree.io/f/mrblbybv", {
+      method: "POST",
+      body: formData,
+      headers: {
+        Accept: "application/json",
+      },
+    });
 
-    // Basic validation
-    if (!email || !email.toString().includes("@")) {
-      alert("Please enter a valid email address.");
-      setLoading(false);
-      return;
+    if (response.ok) {
+      setFormSubmitted(true);
+    } else {
+      alert("Something went wrong. Please try again.");
     }
 
-    // Simulate form submission
-    setTimeout(() => {
-      setLoading(false);
-      setFormSubmitted(true);
-    }, 2000);
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Navigation />
-      
+
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
@@ -72,7 +75,7 @@ const Contact = () => {
             Ready to transform your business? Let's start the conversation.
           </p>
         </div>
-        
+
         <div className="grid md:grid-cols-2 gap-16 max-w-6xl mx-auto">
           <div>
             <h2 className="text-3xl font-bold text-foreground mb-8">Contact Information</h2>
@@ -90,30 +93,18 @@ const Contact = () => {
                 </div>
               ))}
             </div>
-            
+
             <div className="bg-card rounded-lg p-6 shadow-soft">
               <h3 className="text-xl font-bold text-foreground mb-4">What to Expect</h3>
               <ul className="space-y-3 text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span>Free initial consultation</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span>Detailed project proposal</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span>Transparent pricing</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span>Quick turnaround times</span>
-                </li>
+                <li className="flex items-center gap-2"><div className="w-2 h-2 bg-primary rounded-full"></div><span>Free initial consultation</span></li>
+                <li className="flex items-center gap-2"><div className="w-2 h-2 bg-primary rounded-full"></div><span>Detailed project proposal</span></li>
+                <li className="flex items-center gap-2"><div className="w-2 h-2 bg-primary rounded-full"></div><span>Transparent pricing</span></li>
+                <li className="flex items-center gap-2"><div className="w-2 h-2 bg-primary rounded-full"></div><span>Quick turnaround times</span></li>
               </ul>
             </div>
           </div>
-          
+
           <Card className="shadow-soft">
             <CardHeader>
               <CardTitle className="text-2xl">Send us a message</CardTitle>
@@ -124,43 +115,33 @@ const Contact = () => {
             <CardContent>
               {formSubmitted ? (
                 <div className="text-center text-primary font-bold">
-                  Thank you for reaching out! We'll get back to you soon.
+                  ✅ Thank you for reaching out! We'll get back to you soon.
                 </div>
               ) : (
                 <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        First Name
-                      </label>
-                      <Input name="firstName" placeholder="John" />
+                      <label className="block text-sm font-medium text-foreground mb-2">First Name</label>
+                      <Input name="firstName" placeholder="John" required />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        Last Name
-                      </label>
-                      <Input name="lastName" placeholder="Doe" />
+                      <label className="block text-sm font-medium text-foreground mb-2">Last Name</label>
+                      <Input name="lastName" placeholder="Doe" required />
                     </div>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Email
-                    </label>
-                    <Input name="email" type="email" placeholder="john@example.com" />
+                    <label className="block text-sm font-medium text-foreground mb-2">Email</label>
+                    <Input name="email" type="email" placeholder="john@example.com" required />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Company
-                    </label>
+                    <label className="block text-sm font-medium text-foreground mb-2">Company</label>
                     <Input name="company" placeholder="Your Company Name" />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Service Interest
-                    </label>
+                    <label className="block text-sm font-medium text-foreground mb-2">Service Interest</label>
                     <select
                       name="serviceInterest"
                       className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
@@ -171,18 +152,12 @@ const Contact = () => {
                       <option>All Services</option>
                     </select>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Message
-                    </label>
-                    <Textarea 
-                      name="message"
-                      placeholder="Tell us about your project..." 
-                      className="min-h-[120px]"
-                    />
+                    <label className="block text-sm font-medium text-foreground mb-2">Message</label>
+                    <Textarea name="message" placeholder="Tell us about your project..." className="min-h-[120px]" />
                   </div>
-                  
+
                   <Button className="w-full shadow-elegant" disabled={loading}>
                     {loading ? "Sending..." : "Send Message"}
                   </Button>
@@ -192,7 +167,7 @@ const Contact = () => {
           </Card>
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );
