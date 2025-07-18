@@ -40,6 +40,13 @@ const Services = () => {
       features : ["iOS & Android", "User-friendly interfaces", "Performance optimization", "App store deployment"]
       
     },
+    {
+      icon: <CreditCard className="w-12 h-12 text-primary" />,
+      title: "Brand Building",
+      description: "Comprehensive branding services to help you establish a strong online presence and connect with your audience.",
+      features: ["Logo design", "Brand strategy", "Social media management", "Content creation"]
+     
+    },
   ];
 
   return (
