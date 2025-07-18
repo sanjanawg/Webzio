@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Mail, Phone, MapPin, Clock } from 'lucide-react';
 
 const Contact = () => {
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const contactInfo = [
     {
       icon: <Mail className="w-6 h-6 text-primary" />,
@@ -34,6 +37,27 @@ const Contact = () => {
       description: "We'll get back to you quickly"
     }
   ];
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.target);
+    const email = formData.get("email");
+
+    // Basic validation
+    if (!email || !email.toString().includes("@")) {
+      alert("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
+    // Simulate form submission
+    setTimeout(() => {
+      setLoading(false);
+      setFormSubmitted(true);
+    }, 2000);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -91,7 +115,6 @@ const Contact = () => {
           </div>
           
           <Card className="shadow-soft">
-            
             <CardHeader>
               <CardTitle className="text-2xl">Send us a message</CardTitle>
               <CardDescription>
@@ -99,62 +122,72 @@ const Contact = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
+              {formSubmitted ? (
+                <div className="text-center text-primary font-bold">
+                  Thank you for reaching out! We'll get back to you soon.
+                </div>
+              ) : (
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        First Name
+                      </label>
+                      <Input name="firstName" placeholder="John" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Last Name
+                      </label>
+                      <Input name="lastName" placeholder="Doe" />
+                    </div>
+                  </div>
+                  
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      First Name
+                      Email
                     </label>
-                    <Input placeholder="John" />
+                    <Input name="email" type="email" placeholder="john@example.com" />
                   </div>
+                  
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Last Name
+                      Company
                     </label>
-                    <Input placeholder="Doe" />
+                    <Input name="company" placeholder="Your Company Name" />
                   </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Email
-                  </label>
-                  <Input type="email" placeholder="john@example.com" />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Company
-                  </label>
-                  <Input placeholder="Your Company Name" />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Service Interest
-                  </label>
-                  <select className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground">
-                    <option>Web Development</option>
-                    <option>AI Automation</option>
-                    <option>Billing Software</option>
-                    <option>All Services</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Message
-                  </label>
-                  <Textarea 
-                    placeholder="Tell us about your project..." 
-                    className="min-h-[120px]"
-                  />
-                </div>
-                
-                <Button className="w-full shadow-elegant">
-                  Send Message
-                </Button>
-              </form>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Service Interest
+                    </label>
+                    <select
+                      name="serviceInterest"
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
+                    >
+                      <option>Web Development</option>
+                      <option>AI Automation</option>
+                      <option>Billing Software</option>
+                      <option>All Services</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Message
+                    </label>
+                    <Textarea 
+                      name="message"
+                      placeholder="Tell us about your project..." 
+                      className="min-h-[120px]"
+                    />
+                  </div>
+                  
+                  <Button className="w-full shadow-elegant" disabled={loading}>
+                    {loading ? "Sending..." : "Send Message"}
+                  </Button>
+                </form>
+              )}
             </CardContent>
           </Card>
         </div>
